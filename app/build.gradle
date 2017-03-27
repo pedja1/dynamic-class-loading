@@ -1,0 +1,83 @@
+import groovy.io.FileType
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.android_forever.dynamicclassloader"
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    //compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha4'
+    testCompile 'junit:junit:4.12'
+    compile project(":core_android")
+    compile project(":class_loader")
+}
+
+afterEvaluate {
+    if (tasks.findByPath('compileReleaseJava') != null) {
+        compileReleaseJava.dependsOn renameCompileJars
+    } else if (tasks.findByPath('compileReleaseJavaWithJavac') != null) {
+        compileReleaseJavaWithJavac.dependsOn renameCompileJars
+    }
+    if (tasks.findByPath('compileDebugJava') != null) {
+        compileDebugJava.dependsOn renameCompileJars
+    } else if (tasks.findByPath('compileDebugJavaWithJavac') != null) {
+        compileDebugJavaWithJavac.dependsOn renameCompileJars
+    }
+}
+
+task renameCompileJars << {
+
+    def projectRoot = project.parent.name//TODO this is not scalable at all
+    def explodedAarsDir = new File(project.buildscript.sourceFile.getParent(), "build/intermediates/exploded-aar/")
+    explodedAarsDir.eachFile(FileType.DIRECTORIES) { module ->
+        if (!module.name.equals(projectRoot)) {
+            module.eachFile(FileType.DIRECTORIES) { moduleDir ->
+                moduleDir.eachFile(FileType.DIRECTORIES) { moduleVersion ->
+                    //println moduleVersion.path
+                    def jarDir = new File(moduleVersion, "jars");
+                    if (jarDir.exists()) {
+                        jarDir.renameTo(new File(moduleVersion, "jars.backup"))
+                        jarDir.mkdir();
+                        createEmptyZip(new File(jarDir, "classes.jar"))
+                    }
+                }
+            }
+        }
+
+    }
+
+}
+
+def createEmptyZip(path) {
+    byte[] EmptyZip = [80, 75, 05, 06, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00];
+    try {
+        FileOutputStream fos = new FileOutputStream(path);
+        fos.write(EmptyZip, 0, 22);
+        fos.flush();
+        fos.close();
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}

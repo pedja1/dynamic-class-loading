@@ -1,0 +1,47 @@
+repositories {
+    maven { url 'http://maven.android-forever.com' }
+    flatDir { dirs 'aars' }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 25
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+afterEvaluate {
+    if (tasks.findByPath('packageRelease') != null) {
+        packageRelease.dependsOn excludeR
+    }
+    /*else if (tasks.findByPath('packageDebug') != null) {
+        compileDebugJava.dependsOn excludeR
+    }*/
+}
+
+task excludeR << {
+    from "$buildDir/intermediates/classes/release/"
+    exclude '**/BuildConfig.class'
+    exclude '**/R.class'
+    exclude '**/R$*.class'
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.af.jutils:android:2.0.5'
+    compile project(":core_android")
+}

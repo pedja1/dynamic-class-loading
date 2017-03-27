@@ -1,0 +1,1 @@
+include ':app', ':xdelta-jni', ':external', ':core_android', ':class_loader'

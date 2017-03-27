@@ -1,0 +1,9 @@
+<manifest package="com.android_forever.dcl.core_android"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity android:name="com.android_forever.dcl.external.MainActivity"
+            android:theme="@style/Theme.AppCompat"/>
+        </application>
+
+</manifest>

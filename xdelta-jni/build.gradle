@@ -1,0 +1,15 @@
+ apply plugin: 'com.android.library'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    sourceSets.main.jni.srcDirs = []
+    sourceSets.main.jniLibs.srcDirs = ['src/main/libs']
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

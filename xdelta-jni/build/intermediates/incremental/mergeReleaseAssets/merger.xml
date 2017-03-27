@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/home/pedja/workspace/DynamicClassLoader/xdelta-jni/src/main/assets"/><source path="/home/pedja/workspace/DynamicClassLoader/xdelta-jni/build/generated/assets/shaders/release"/></dataSet><dataSet config="release"><source path="/home/pedja/workspace/DynamicClassLoader/xdelta-jni/src/release/assets"/></dataSet></merger>

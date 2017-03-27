@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">core</string>
+    <string name="result_text" formatted="false">result(%d+%d) = %d</string>
+</resources>
